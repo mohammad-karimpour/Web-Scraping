@@ -1,0 +1,39 @@
+from playwright.sync_api import sync_playwright
+import time
+
+print('login instagram account ')
+username =  input('username:')
+password = input('password:')
+print('Loding...')
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+    page.goto("https://www.instagram.com/", timeout=500000, wait_until='load')
+    
+    # پر کردن فرم لاگین
+    page.fill("input[name='username']", username)
+    page.fill("input[name='password']", password)
+    print('Loding...')
+    # کلیک روی دکمه ورود
+    page.click("button[type='submit']")
+    
+    #فرایند سرچ کردن پیج و فالو کردن آن
+    time.sleep(8)
+    page.locator("text=Search").nth(1).click()
+    print('Enter the username of the page you want to follow.')
+    page_name = input('instagram page name?')
+    page.fill("input[aria-label='Search input']", page_name)
+    time.sleep(2)
+    page.click('a[href="/arbabacamp/"]')
+    time.sleep(2)
+    page.click("text=Follow")
+    time.sleep(5)
+
+    #پیام موفقیت آمیز
+    print('Congratulations! You have followed the page.')
+    print('The page photo is ready.')
+ 
+    # گرفنت عکس از پیج
+    page.screenshot(path="screenshot.png")
+
+    browser.close()
